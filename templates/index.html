@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>ChatBot</title>
+    <!-- Łączenie arkusza stylów -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <!-- Warstwa z animowanymi gwiazdkami w tle -->
     <div class="stars">
       <div class="star"></div>
       <div class="star"></div>
@@ -18,24 +20,34 @@
       <div class="star"></div>
       <div class="star"></div>
     </div>
+    <!-- Główna zawartość czatu -->
     <div class="chat-container">
+        <!-- Okno wyświetlania wiadomości czatu -->
         <div id="chat-window" class="chat-window"></div>
+        <!-- Formularz wysyłania wiadomości -->
         <form id="chat-form">
             <input type="text" id="message-input" placeholder="Napisz wiadomość..." autocomplete="off" required>
             <button type="submit">Wyślij</button>
         </form>
     </div>
+    <!-- Skrypt obsługujący interakcję czatu -->
     <script>
+        // Pobranie elementów DOM
         const form = document.getElementById('chat-form');
         const messageInput = document.getElementById('message-input');
         const chatWindow = document.getElementById('chat-window');
         let typingMessageElement = null;
+
+        // Obsługa wysyłania formularza
         form.addEventListener('submit', function(event) {
             event.preventDefault();
             const message = messageInput.value.trim();
             if(message === "") return;
+            // Dodanie wiadomości użytkownika
             addMessage("Ty", message);
+            // Dodanie animowanego komunikatu "pisania" bota
             addTypingMessage();
+            // Wysłanie zapytania do endpointu /chat
             fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -44,6 +56,7 @@
             .then(response => response.json())
             .then(data => {
                 removeTypingMessage();
+                // Dodanie odpowiedzi bota
                 addMessage("Bot", data.response);
             })
             .catch(error => {
@@ -52,6 +65,8 @@
             });
             messageInput.value = '';
         });
+
+        // Funkcja dodająca wiadomość do okna czatu
         function addMessage(sender, message) {
             const messageElement = document.createElement('div');
             messageElement.classList.add('message');
@@ -64,6 +79,8 @@
             chatWindow.appendChild(messageElement);
             chatWindow.scrollTop = chatWindow.scrollHeight;
         }
+
+        // Funkcja dodająca animację "pisania" bota
         function addTypingMessage() {
             typingMessageElement = document.createElement('div');
             typingMessageElement.classList.add('message', 'bot-message', 'typing-message');
@@ -71,6 +88,8 @@
             chatWindow.appendChild(typingMessageElement);
             chatWindow.scrollTop = chatWindow.scrollHeight;
         }
+
+        // Funkcja usuwająca animację "pisania"
         function removeTypingMessage() {
             if (typingMessageElement) {
                 chatWindow.removeChild(typingMessageElement);
