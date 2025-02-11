@@ -9,23 +9,19 @@
     <div class="chat-container">
         <div id="chat-window" class="chat-window"></div>
         <form id="chat-form">
-            <input type="text" id="message-input" placeholder="Wpisz wiadomość..." autocomplete="off" required>
+            <input type="text" id="message-input" placeholder="Napisz wiadomość..." autocomplete="off" required>
             <button type="submit">Wyślij</button>
         </form>
     </div>
-
     <script>
         const form = document.getElementById('chat-form');
         const messageInput = document.getElementById('message-input');
         const chatWindow = document.getElementById('chat-window');
-
         form.addEventListener('submit', function(event) {
             event.preventDefault();
             const message = messageInput.value.trim();
             if(message === "") return;
-
             addMessage("Ty", message);
-
             fetch('/chat', {
                 method: 'POST',
                 headers: {
@@ -42,18 +38,14 @@
             });
             messageInput.value = '';
         });
-
         function addMessage(sender, message) {
             const messageElement = document.createElement('div');
             messageElement.classList.add('message');
-
-            // W zależności od nadawcy dodajemy odpowiednią klasę CSS
             if (sender === "Ty") {
                 messageElement.classList.add('user-message');
             } else {
                 messageElement.classList.add('bot-message');
             }
-
             messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
             chatWindow.appendChild(messageElement);
             chatWindow.scrollTop = chatWindow.scrollHeight;
