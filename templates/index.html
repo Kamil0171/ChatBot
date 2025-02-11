@@ -46,6 +46,14 @@
         function addMessage(sender, message) {
             const messageElement = document.createElement('div');
             messageElement.classList.add('message');
+
+            // W zależności od nadawcy dodajemy odpowiednią klasę CSS
+            if (sender === "Ty") {
+                messageElement.classList.add('user-message');
+            } else {
+                messageElement.classList.add('bot-message');
+            }
+
             messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
             chatWindow.appendChild(messageElement);
             chatWindow.scrollTop = chatWindow.scrollHeight;

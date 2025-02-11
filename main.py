@@ -11,7 +11,6 @@ chat_prompt = ChatPromptTemplate(
     input_variables=["input"]
 )
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
