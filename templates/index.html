@@ -6,6 +6,18 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="stars">
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+      <div class="star"></div>
+    </div>
     <div class="chat-container">
         <div id="chat-window" class="chat-window"></div>
         <form id="chat-form">
@@ -17,23 +29,25 @@
         const form = document.getElementById('chat-form');
         const messageInput = document.getElementById('message-input');
         const chatWindow = document.getElementById('chat-window');
+        let typingMessageElement = null;
         form.addEventListener('submit', function(event) {
             event.preventDefault();
             const message = messageInput.value.trim();
             if(message === "") return;
             addMessage("Ty", message);
+            addTypingMessage();
             fetch('/chat', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: message })
             })
             .then(response => response.json())
             .then(data => {
+                removeTypingMessage();
                 addMessage("Bot", data.response);
             })
             .catch(error => {
+                removeTypingMessage();
                 console.error('Błąd:', error);
             });
             messageInput.value = '';
@@ -49,6 +63,19 @@
             messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
             chatWindow.appendChild(messageElement);
             chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+        function addTypingMessage() {
+            typingMessageElement = document.createElement('div');
+            typingMessageElement.classList.add('message', 'bot-message', 'typing-message');
+            typingMessageElement.innerHTML = `<strong>Bot:</strong> <span class="typing-dots"><span>.</span><span>.</span><span>.</span></span>`;
+            chatWindow.appendChild(typingMessageElement);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+        function removeTypingMessage() {
+            if (typingMessageElement) {
+                chatWindow.removeChild(typingMessageElement);
+                typingMessageElement = null;
+            }
         }
     </script>
 </body>
